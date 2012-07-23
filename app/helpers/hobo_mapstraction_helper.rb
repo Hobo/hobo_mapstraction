@@ -1,0 +1,2 @@
+module HoboMapstractionHelper
+end

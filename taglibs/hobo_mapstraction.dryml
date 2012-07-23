@@ -1,0 +1,94 @@
+<%# tag definitions for the hobo_mapstraction plugin %>
+
+<%#
+This tag instantiates a map using the mapstraction javascript API.
+
+The mapstraction javascript object may be accessed via jQuery("#mymap").data("map");
+
+### Examples
+
+    <mapstraction api="googlev3" style="height: 400px;" centerLat="37.75" centerLon="-122.44" zoom="&8" largeControls mapTypeControls/>
+
+Auto-fill inputs with auto-map marking:
+
+
+      <span id="latitude"/>
+      <span id="longitude"/>
+      <input:address onchange="hjq.mapstractionClickOnAddress('#mymap', $('#user_address').val(), $('#user_locality').val(), $('#user_region').val(), $('#user_country').val());"/>
+      ...
+      <mapstraction id="mymap" api="googlev3" largeControls mapTypeControls updateLatOnClick="#user_latitude" updateLonOnClick="#user_longitude" updateAddressOnClick="#user_address" markerOnClick>
+        <mapstraction-marker lat="&this.latitude" lon="&this.longitude"/>
+      </mapstraction>
+
+### Attributes
+
+- api: (required) The API to use, one of 'google', 'googlev3', 'yahoo', 'microsoft', 'openstreetmap', 'multimap', 'map24', 'openlayers', 'mapquest'.
+- centerLat, centerLon: if provided, map is centred on this location.   Otherwise the map is centred on any markers.
+- zoom: an integer indicating the desired zoom level.
+- largeControls:  boolean
+- smallControls:  boolean
+- mapTypeControls:  boolean
+- mapType: ROAD, SATELLITE, HYBRID, PHYSICAL
+- setupjs: this javascript function or snippet is called after the map has been instantiated.   `this` is set to the mapstraction instance.   This is useful to complete setup in Javascript for options that have not been provided by this Hobo interface.
+- click: this function or snippet is called when the map is clicked.  See the mapstraction event handling documentation for the function signature and examples.
+- markerOnClick: boolean.  If set, then a marker is placed on the map when a user clicks on the map, replacing any existing markers
+- updateLatOnClick, updateLonOnClick: jQuery selector.  On click, the elements referenced by the selector are set to the lat/lon of the click.
+- updateAddressOnClick, updateLocalityOnClick, updateRegionOnClick, updateCountryOnClick: jQuery selector.  On click, the location is geolocated, and the elements referenced by the selector are set to the address of the locaiton.
+
+### Javascript Functions.
+
+The following functions are available to assist with integration:
+
+- hjq.clickOnLocation(map_selector, lat, lon): simulate a click by the user on a location
+- hjq.clickOnAddress(map_selecter, street, locality, region, country): geolocate, and then simulate a click by the user on that location
+
+%>
+<def tag="mapstraction">
+  <% options, attributes = attributes.partition_hash(%w(api centerLat centerLon zoom largeControls smallControls mapType mapTypeControls setupjs click updateLatOnClick updateLonOnClick markerOnClick updateAddressOnClick updateLocalityOnClick updateRegionOnClick updateCountryOnClick)) %>
+  <div data-rapid='&data_rapid("mapstraction", options)' param="default" merge />
+</def>
+
+<%#
+This tag places a marker on a map.   It must be used inside of a mapstraction tag.
+
+The content of the mapstraction-marker tag is used for the info bubble of the marker.
+
+You can access the javascript marker object via $("#mymap").data('map').markers or via hjq.findMarker("#mymap", markerID)
+
+### Examples
+
+    <mapstraction api="googlev3" style="height: 400px;" zoom="&8" largeControls mapTypeControls>
+      <mapstraction-marker lat="37.75" lon="-122.44">San Francisco</mapstraction-marker>
+    </mapstraction>
+
+Link a map and a collection -- clicking on one highlights the other.
+
+    <mapstraction id="mymap" api="googlev3" zoom="12" largeControls mapTypeControls  style="height: 400px;" >
+      <repeat with="&User.all">
+        <mapstraction-marker lat="&this.latitude" lon="&this.longitude" markerID="marker-#{this.id}" click="$('.users.collection li').removeClass('highlight'); $('#user-card-#{this.id}').addClass('highlight');">
+          <a/>
+        </mapstraction-marker>
+      </repeat>
+    </mapstraction>
+    <collection with="&User.all">
+      <card: id="user-card-#{this.id}" onclick="hjq.mapstraction.openMarker('#mymap', 'marker-#{this.id}', true);"/>
+    </collection>
+
+### Attributes
+
+- lat, lon: the marker location
+- click: javascript function or snippet to execute on click
+- markerID: used by hjq.openMarker and hjq.findMarker
+- openBubble: boolean.  If true, marker starts in an open state
+- label, icon, iconShadow, infoDiv, draggable, hover, hoverIcon, openBubble, groupName: passed unchanged to [mxn.Marker.addData](http://mapstraction.com/mxn/build/latest/docs/symbols/mxn.Marker.html#addData)
+
+### Javascript Helper Functions
+
+- hjq.findMarker(map_selecter, marker_id): find the specified marker
+
+- hjq.openMarker(map_selecter, marker_id, exclusive): open the info bubble on the specified marker.   If exclusive is true, previously opened markers are closed.
+%>
+<def tag="mapstraction-marker">
+  <% options, attributes = attributes.partition_hash(%w(lat lon click markerID label icon iconShadow infoDiv draggable hover hoverIcon openBubble groupName)) %>
+  <span data-mapstraction-marker="&options.to_json" merge param="default" style="display:none;"/>
+</def>
