@@ -23,7 +23,7 @@ Be sure to replace YOUR_KEY_HERE with the API key you [get from Google](https://
 
 The source for this plugin lives at git://github.com/Hobo/hobo_mapstraction.   Pull requests are welcome.
 
-Documentation for this plugin is in the DRYMLDoc.   It will be visible on [the hobo cookbook](http://cookbook.hobocentral.net) once the author pushes it there.  Until then it may be viewed directly in the source in the taglibs directly.
+Documentation for this plugin is in the DRYMLDoc.   It will be visible on [the hobo cookbook](http://cookbook.hobocentral.net) once the author pushes it there.  Until then it may be viewed directly in the source in the taglibs directory.
 
 ### License
 
