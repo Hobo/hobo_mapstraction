@@ -42,21 +42,21 @@ jQuery.fn.hjq_mapstraction = function(o) {
 
   // helper function for updateXxxOnClick
   var setVal = function(v) {
-    if(this.is(:input)) this.val(v);
+    if(this.is(':input')) this.val(v);
     else this.text(v);
   }
 
   if(o.updateLatOnClick || o.updateLonOnClick) map.click.addHandler(function(event_name, event_source, event_args) {
-    setVal.call($(o.updateLatOnClick), event_args.location.lat;)
-    setVal.call($(o.updateLonOnClick), event_args.location.lon;)
+    setVal.call($(o.updateLatOnClick), event_args.location.lat)
+    setVal.call($(o.updateLonOnClick), event_args.location.lon)
   });
 
   if(o.updateAddressOnClick || o.updateLocalityOnClick || o.updateCountryOnClick || o.updateRegionOnClick) {
     var geocoder = new mxn.Geocoder(o['api'], function(location) {
-      setVal.call($(o.updateAddressOnClick), location.street;)
-      setVal.call($(o.updateLocalityOnClick), location.locality;)
-      setVal.call($(o.updateRegionOnClick), location.region;)
-      setVal.call($(o.updateCountryOnClick), location.country;)
+      setVal.call($(o.updateAddressOnClick), location.street)
+      setVal.call($(o.updateLocalityOnClick), location.locality)
+      setVal.call($(o.updateRegionOnClick), location.region)
+      setVal.call($(o.updateCountryOnClick), location.country)
     });
     map.click.addHandler(function(event_name, event_source, event_args) {
       geocoder.geocode(event_args.location);
