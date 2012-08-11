@@ -89,6 +89,22 @@ Link a map and a collection -- clicking on one highlights the other.
 - hjq.openMarker(map_selecter, marker_id, exclusive): open the info bubble on the specified marker.   If exclusive is true, previously opened markers are closed.
 %>
 <def tag="mapstraction-marker">
-  <% options, attributes = attributes.partition_hash(%w(lat lon click markerID label icon iconShadow infoDiv draggable hover hoverIcon openBubble groupName)) %>
-  <span data-mapstraction-marker="&options.to_json" merge param="default" style="display:none;"/>
+  <span data-mapstraction-marker="&attributes.to_json" param="default" style="display:none;"/>
+</def>
+
+
+<%#
+This tag places a polyline on a map.   It must be used inside of a mapstraction tag.
+
+### Attributes
+
+- points: an array of lat,lon pairs
+- color: string in form #RRGGBB 
+- width: integer
+- opacity: float
+- closed: boolean
+- fillColor: string in form #RRGGBB 
+%>
+<def tag="mapstraction-polyline" attrs="points">
+  <span data-mapstraction-polyline="&{data: attributes, points: points}.to_json" param="default" style="display:none;"/>
 </def>

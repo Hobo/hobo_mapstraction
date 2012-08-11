@@ -11,6 +11,11 @@ jQuery.fn.hjq_mapstraction = function(o) {
     markers.push({o: $(this).data('mapstraction-marker'), info: $(this).html()});
   });
 
+  var polylines = [];
+  this.find("[data-mapstraction-polyline]").each(function() {
+    polylines.push($(this).data('mapstraction-polyline'));
+  });
+
   // the main reason we're here
   var map = new mxn.Mapstraction(this.get(0), o['api']);
 
@@ -33,7 +38,19 @@ jQuery.fn.hjq_mapstraction = function(o) {
     marker.addData(markers[i].o);
   }
 
-  // centering must be done after markers
+  // set up polylines
+  for(var i=0; i<polylines.length; i++) {
+    var points = [];
+    console.log(polylines[i]);
+    for(var j=0; j<polylines[i].points.length; j++) {
+      points.push(new mxn.LatLonPoint(polylines[i].points[j][0], polylines[i].points[j][1]));
+    }
+    console.log(points)
+    var polyline = new mxn.Polyline(points);
+    polyline.addData(polylines[i].data);
+    map.addPolyline(polyline);
+  }
+
   if(o['centerLat' || 'centerLon']) map.setCenter(new mxn.LatLonPoint(o['centerLat'], o['centerLon']));
   else map.autoCenterAndZoom();
 
