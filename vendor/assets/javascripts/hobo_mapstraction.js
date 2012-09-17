@@ -30,6 +30,7 @@ jQuery.fn.hjq_mapstraction = function(o) {
   for(var i=0; i<markers.length; i++) {
     var marker = new mxn.Marker(new mxn.LatLonPoint(markers[i].o.lat, markers[i].o.lon));
     if(markers[i].info.length) marker.setInfoBubble(markers[i].info);
+    if(markers[i].o.label) marker.setLabel(markers[i].o.label);
     if(markers[i].o.click) marker.click.addHandler(this.hjq('createFunction', markers[i].o.click))
     if(markers[i].o.markerID) marker.setAttribute("markerID", markers[i].o.markerID);
     map.addMarker(marker);
@@ -41,16 +42,21 @@ jQuery.fn.hjq_mapstraction = function(o) {
   // set up polylines
   for(var i=0; i<polylines.length; i++) {
     var points = [];
-    console.log(polylines[i]);
     for(var j=0; j<polylines[i].points.length; j++) {
       points.push(new mxn.LatLonPoint(polylines[i].points[j][0], polylines[i].points[j][1]));
     }
-    console.log(points)
     var polyline = new mxn.Polyline(points);
+    if(polylines[i].data.click) polyline.click.addHandler(this.hjq('createFunction', polylines[i].data.click))
     polyline.addData(polylines[i].data);
     map.addPolyline(polyline);
   }
 
+  if(o['geolocate']) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      map.setCenter(new mxn.LatLonPoint(position.coords.latitude, position.coords.longitude));
+      if(o['zoom']) map.setZoom(parseInt(o['zoom']));
+    });
+  }
   if(o['centerLat' || 'centerLon']) map.setCenter(new mxn.LatLonPoint(o['centerLat'], o['centerLon']));
   else map.autoCenterAndZoom();
 
