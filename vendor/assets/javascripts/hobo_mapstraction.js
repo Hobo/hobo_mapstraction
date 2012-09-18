@@ -117,9 +117,14 @@ hjq.mapstraction = {
   clickOnAddress: function(map_selector, street, locality, region, country) {
     var map = jQuery(map_selector).data('map');
     var o = jQuery(map_selector).data('map_options');
-    var geocoder = new mxn.Geocoder(o['api'], function(location) {
+    var set_center = function(location) {
       map.setCenter(location.point);
       map.click.fire({location: location.point});
+    };
+    var geocoder = new mxn.Geocoder(o['api'], function(location) {
+      set_center(location);
+      // sometimes the centering doesn't take, so try again in a bit.
+      setTimeout(function() {set_center(location);}, 150);
     });
     geocoder.geocode({street: street, locality: locality, region: region, country: country});
   },
