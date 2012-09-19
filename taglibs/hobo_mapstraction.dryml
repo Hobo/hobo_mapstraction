@@ -97,6 +97,8 @@ Link a map and a collection -- clicking on one highlights the other.
 <%#
 This tag places a polyline on a map.   It must be used inside of a mapstraction tag.
 
+If you put content inside of this tag, a marker will also be added to the map on the first point in the polyline to hold the content.   If the polyline is clicked, the marker will open its bubble.
+
 ### Attributes
 
 - points: an array of lat,lon pairs

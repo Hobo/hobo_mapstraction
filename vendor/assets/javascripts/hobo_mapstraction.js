@@ -6,6 +6,8 @@
 jQuery.fn.hjq_mapstraction = function(o) {
   // save off the markers before mapstraction kills everything inside
   // our div
+  var map;
+
   var markers = [];
   this.find("[data-mapstraction-marker]").each(function() {
     markers.push({o: $(this).data('mapstraction-marker'), info: $(this).html()});
@@ -13,11 +15,21 @@ jQuery.fn.hjq_mapstraction = function(o) {
 
   var polylines = [];
   this.find("[data-mapstraction-polyline]").each(function() {
-    polylines.push($(this).data('mapstraction-polyline'));
+    var data=$(this).data('mapstraction-polyline');
+    if($(this).html().length>0) {
+      var marker_index = markers.push({info: $(this).html(), o: {lat: data.points[0][0], lon: data.points[0][1]}}) - 1;
+      if(!data.data) data.data = {};
+      if(!data.data.click) {
+        data.data.click = function() {
+          map.markers[marker_index].openBubble();
+        };
+      }
+    }
+    polylines.push(data);
   });
 
   // the main reason we're here
-  var map = new mxn.Mapstraction(this.get(0), o['api']);
+  map = new mxn.Mapstraction(this.get(0), o['api']);
 
   // some of the easy options
   if(o['zoom']) map.setZoom(parseInt(o['zoom']));
