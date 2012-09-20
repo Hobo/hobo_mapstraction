@@ -32,7 +32,6 @@ jQuery.fn.hjq_mapstraction = function(o) {
   map = new mxn.Mapstraction(this.get(0), o['api']);
 
   // some of the easy options
-  if(o['zoom']) map.setZoom(parseInt(o['zoom']));
   if(o.largeControls) map.addLargeControls();
   if(o.smallControls) map.addSmallControls();
   if(o.mapTypeControls) map.addMapTypeControls();
@@ -65,11 +64,10 @@ jQuery.fn.hjq_mapstraction = function(o) {
 
   if(o['geolocate']) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      map.setCenter(new mxn.LatLonPoint(position.coords.latitude, position.coords.longitude));
-      if(o['zoom']) map.setZoom(parseInt(o['zoom']));
+      map.setCenterAndZoom(new mxn.LatLonPoint(position.coords.latitude, position.coords.longitude), parseInt(o['zoom'] || 15));
     });
   }
-  if(o['centerLat' || 'centerLon']) map.setCenter(new mxn.LatLonPoint(o['centerLat'], o['centerLon']));
+  if(o['centerLat'] && o['centerLon'] && o['zoom']) setTimeout(function() {map.setCenterAndZoom(new mxn.LatLonPoint(parseFloat(o['centerLat']), parseFloat(o['centerLon'])), parseInt(o['zoom']));}, 1);
   else map.autoCenterAndZoom();
 
   // click handler
